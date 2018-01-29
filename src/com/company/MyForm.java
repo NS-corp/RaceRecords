@@ -8,7 +8,8 @@ import java.awt.event.ActionListener;
 
 public class MyForm extends JFrame {
 
-    final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\project_1\\resources";
+    //final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\project_1\\resources";
+    final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
     final String openFileIconPath = resourcesPath + "\\op.png";
     final String saveFileIconPath = resourcesPath + "\\sav.png";
     final String addIconPath = resourcesPath + "\\pl.png";
