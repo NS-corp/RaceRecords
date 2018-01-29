@@ -7,10 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MyForm extends JFrame {
-
-
-    //private final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
-    private final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
+    
+    private final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
+    //private final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
     private final String openFileIconPath = resourcesPath + "\\op.png";
     private final String saveFileIconPath = resourcesPath + "\\sav.png";
     private final String addIconPath = resourcesPath + "\\pl.png";
