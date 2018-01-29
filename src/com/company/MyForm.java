@@ -8,31 +8,35 @@ import java.awt.event.ActionListener;
 
 public class MyForm extends JFrame {
 
-    final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\project_1\\resources";
-    final String openFileIconPath = resourcesPath + "\\op.png";
-    final String saveFileIconPath = resourcesPath + "\\sav.png";
-    final String addIconPath = resourcesPath + "\\pl.png";
-    final String deleteIconPath = resourcesPath + "\\del.png";
+    private final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
+    private final String openFileIconPath = resourcesPath + "\\op.png";
+    private final String saveFileIconPath = resourcesPath + "\\sav.png";
+    private final String addIconPath = resourcesPath + "\\pl.png";
+    private final String deleteIconPath = resourcesPath + "\\del.png";
 
+    // Racers model
+    private final Object[] racersTableHeaders = new Object[]{"Гонщик", "Команда", "Количество очков"};
+    private final Object[][] racersTableCells = new Object[10][3];
+    DefaultTableModel racersTableModel = new DefaultTableModel(racersTableCells, racersTableHeaders);
 
-    private JPanel MainPanel;
+    // Route model
+    private final Object[] routeTableHeaders = new Object[]{"Трассы", "Призёр", "Команда призёра"};
+    private final Object[][] routeTableCells = new Object[10][3];
+    DefaultTableModel routeTableModel = new DefaultTableModel(routeTableCells, routeTableHeaders);
+
+    // Race model
+    private final Object[] raceTableHeaders = new Object[]{"Трассы", "Протяженность трассы", "Дата заезда"};
+    private final Object[][] raceTableCells = new Object[10][3];
+    DefaultTableModel raceTableModel = new DefaultTableModel(raceTableCells, raceTableHeaders);
+
+    DefaultTableModel currentModel;
 
     JButton button_save, button_open, button_add, button_delete;
     JMenuBar menuBar;
     JMenu filemenu;
     JMenuItem RacersItem, RouteItem, RaceItem, ExitItem;
 
-    JTable RacersTable, RouteTable, RaceTable;
-
-    JScrollPane RacersPane; ///////
-
-    JScrollPane scrollPaneRacers, scrollPaneRoute, scrollPaneRace;
-    DefaultTableModel RacersModel, RouteModel, RaceModel;
-
-    Object headers[];
-    Object data[][];
-
-    Container container;
+    JTable table;
 
     iHandler ihandler = new iHandler();
 
@@ -42,24 +46,12 @@ public class MyForm extends JFrame {
         setBounds(100, 100, 600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Создание таблицы для гонщиков.
-        headers = new Object[]{"Гонщик", "Команда", "Количество очков"};
-        data = new Object[10][3];
+        table = new JTable();
+        table.setAutoCreateRowSorter(true);
 
-        // Инициализация контейнеров.
-        RacersModel = new DefaultTableModel(data, headers);
-        RacersTable = new JTable(RacersModel);
-        RacersTable.setAutoCreateRowSorter(true);
+        this.add(new JScrollPane(table));
 
-
-        //RacersPane = new JScrollPane(RacersTable);
-        //getContentPane().add(RacersPane); //ВЫВОД ТАБЛИЦЫ В ГЛАВНОЕ ОКНО
-        getContentPane().add(new JScrollPane(RacersTable));
-        RacersTable.setVisible(false);
-        RacersTable.getTableHeader().setVisible(false);
-
-
-        // RacersTable.addMouseListener(mouse);
+        // racersTable.addMouseListener(mouse);
 
         // создание панели инструментов JToolBar
         JToolBar toolBar = new JToolBar("Панель инструментов");
@@ -104,8 +96,11 @@ public class MyForm extends JFrame {
         button_delete.addActionListener(ihandler);
         ExitItem.addActionListener(ihandler);
         RacersItem.addActionListener(ihandler);
+        RouteItem.addActionListener(ihandler);
+        RaceItem.addActionListener(ihandler);
         //button_open.addActionListener(ihandler);
         //button_save.addActionListener(ihandler);
+
     }
 
     private void Menu() {
@@ -122,10 +117,19 @@ public class MyForm extends JFrame {
         setJMenuBar(menuBar);
     }
 
-    private void CreateRacersTable () {
-        System.out.println("ХУЙ");
-        RacersTable.setVisible(true);
-        RacersTable.getTableHeader().setVisible(true);
+    private void createRacersTable () {
+        table.setModel(racersTableModel);
+        currentModel = racersTableModel;
+    }
+
+    private void createRouteTable () {
+        table.setModel(routeTableModel);
+        currentModel = routeTableModel;
+    }
+
+    private void createRaceTable () {
+        table.setModel(raceTableModel);
+        currentModel = raceTableModel;
     }
 
     // Обработчики событий.
@@ -133,17 +137,23 @@ public class MyForm extends JFrame {
         public void actionPerformed (ActionEvent e) {
 
             if (e.getSource() == button_add) {
-                RacersModel.addRow(new Object[] {null, null, null});
+                currentModel.addRow(new Object[] {null, null, null});
             }
             if (e.getSource() == button_delete) {
-                int selectedRow = RacersTable.getSelectedRow();
-                RacersModel.removeRow(selectedRow);
+                int selectedRow = table.getSelectedRow();
+                currentModel.removeRow(selectedRow);
             }
             if (e.getSource() == ExitItem) {
                 dispose();
             }
             if (e.getSource() == RacersItem) {
-                CreateRacersTable();
+                createRacersTable();
+            }
+            if(e.getSource() == RouteItem){
+                createRouteTable();
+            }
+            if(e.getSource() == RaceItem){
+                createRaceTable();
             }
         }
     }
