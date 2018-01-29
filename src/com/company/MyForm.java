@@ -8,12 +8,13 @@ import java.awt.event.ActionListener;
 
 public class MyForm extends JFrame {
 
-    //final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\project_1\\resources";
-    final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
-    final String openFileIconPath = resourcesPath + "\\op.png";
-    final String saveFileIconPath = resourcesPath + "\\sav.png";
-    final String addIconPath = resourcesPath + "\\pl.png";
-    final String deleteIconPath = resourcesPath + "\\del.png";
+
+    //private final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
+    private final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
+    private final String openFileIconPath = resourcesPath + "\\op.png";
+    private final String saveFileIconPath = resourcesPath + "\\sav.png";
+    private final String addIconPath = resourcesPath + "\\pl.png";
+    private final String deleteIconPath = resourcesPath + "\\del.png";
 
     // Racers model
     private final Object[] racersTableHeaders = new Object[]{"Гонщик", "Команда", "Количество очков"};
