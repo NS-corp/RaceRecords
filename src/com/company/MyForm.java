@@ -11,7 +11,8 @@ public class MyForm extends JFrame {
     final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\project_1\\resources";
     final String openFileIconPath = resourcesPath + "\\op.png";
     final String saveFileIconPath = resourcesPath + "\\sav.png";
-    final String openFileIconPath = resourcesPath + "\\op.png";
+    final String addIconPath = resourcesPath + "\\pl.png";
+    final String deleteIconPath = resourcesPath + "\\del.png";
 
 
     private JPanel MainPanel;
@@ -66,10 +67,10 @@ public class MyForm extends JFrame {
         add(toolBar, BorderLayout.NORTH); // добавили панель инструментов в главное окно программы.
 
         // Создание кнопок и иконок:
-        button_open = new JButton(new ImageIcon("\\C:\\Универ\\ООП\\project_1\\resources\\op.png"));
-        button_save = new JButton(new ImageIcon("\\C:\\Универ\\ООП\\project_1\\resources\\sav.png"));
-        button_add = new JButton(new ImageIcon("\\C:\\Универ\\ООП\\project_1\\resources\\pl.png"));
-        button_delete = new JButton(new ImageIcon("\\C:\\Универ\\ООП\\project_1\\resources\\del.png"));
+        button_open = new JButton(new ImageIcon(openFileIconPath));
+        button_save = new JButton(new ImageIcon(saveFileIconPath));
+        button_add = new JButton(new ImageIcon(addIconPath));
+        button_delete = new JButton(new ImageIcon(deleteIconPath));
 
         // Создание подсказок для кнопок:
         button_open.setToolTipText("Открыть список");
