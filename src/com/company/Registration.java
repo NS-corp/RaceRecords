@@ -1,32 +1,15 @@
 package com.company;
 
 import javax.swing.*;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
-
-
-public class Registration extends JFrame{
-    
-
-}
-
-
-
-/*
-package corp.codemain;
-
-
-import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
-
-public class InputRegistration extends JFrame {
+public class Registration extends JFrame {
     Handler handler = new Handler();
 
     Box box1, box2, box3, mainbox;
@@ -35,22 +18,20 @@ public class InputRegistration extends JFrame {
     JLabel LableLogin, passwLabel;
     JPasswordField passwField;
 
-    public InputRegistration(){
+    public Registration () {
         super ("Вход администратора");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(true);
 
-        createGUIInputRegistration();
-
+        createGUIRegistration();
         passwField.addActionListener(handler);
         button_ok.addActionListener(handler);
         button_cancel.addActionListener(handler);
     }
 
-    private void createGUIInputRegistration(){
-
-        //Настройка первой панели
-        box1=Box.createHorizontalBox();
+    private void createGUIRegistration() {
+        // Настройка первой панели:
+        box1 = Box.createHorizontalBox();
         LableLogin = new JLabel("Введите логин");
         FieldLogin = new JTextField(25);
         box1.add(LableLogin);
@@ -65,7 +46,7 @@ public class InputRegistration extends JFrame {
         box2.add(Box.createHorizontalStrut(6));
         box2.add(passwField);
 
-        //Настройка второй горизонтальной панели
+        // Настройка второй горизонтальной панели:
         box3 = Box.createHorizontalBox();
         button_ok = new JButton("Начать работу");
         button_cancel = new JButton("Отмена");
@@ -73,7 +54,7 @@ public class InputRegistration extends JFrame {
         box3.add(Box.createHorizontalStrut(100));
         box3.add(button_cancel);
 
-        //Размещаем три горизонатльные панели на одной вертикали
+        //Размещаем три горизонтальные панели на одной вертикали
         mainbox = Box.createVerticalBox();
         mainbox.setBorder(new EmptyBorder(20,20,20,20));
         mainbox.add(box1);
@@ -85,33 +66,30 @@ public class InputRegistration extends JFrame {
         pack();
     }
 
-    private class Handler implements ActionListener{
+    private class Handler implements ActionListener {
         public void actionPerformed(ActionEvent e){
-
-            if((e.getSource()== button_ok) || (e.getSource()== passwField)){
+            if ((e.getSource() == button_ok) || (e.getSource() == passwField)){
                 try{
-
-                    //Проверка Логина
+                    // Проверка логина:
                     String strlogin;
                     strlogin = FieldLogin.getText();
-                    if (strlogin.length()==0)
+                    if (strlogin.length() == 0)
                         throw new NullPointerException();
 
-                    //Проверка Пароля
+                    // Проверка пароля:
                     String strPassw;
                     strPassw = passwField.getText();
-                    if (strPassw.length()== 0)
+                    if (strPassw.length() == 0)
                         throw new myPasswordException();
 
-                    //Проверка правильноти логина и пароля
-                    boolean log = false, passw= false, all=false;
-                    String[][] str_Yes= OpenLogPasswFile();
+                    // Проверка правильности логина и пароля
+                    boolean log = false, passw = false, all = false;
+                    String[][] str_Yes = OpenLogPasswFile();
 
                     for (int i= 0; (str_Yes[i][0] != null) && (str_Yes[i][1] != null); i++){
                         if(strlogin.equals(str_Yes[i][0]) && strPassw.equals(str_Yes[i][1])) all = true;
                         if(strlogin.equals(str_Yes[i][0])) log = true;
                         if(strPassw.equals(str_Yes[i][1])) passw = true;
-
                     }
 
                     if(!log) throw new myLogException();
@@ -119,32 +97,29 @@ public class InputRegistration extends JFrame {
 
                     if(all){
                         //Запись в файл и запускаем другое окно
-                        Race racei = new Race();
-                        racei.setVisible(true);
-                        racei.setLocationRelativeTo(null);
+                        MyForm myForm = new MyForm();
+                        myForm.setVisible(true);
+                        myForm.setLocationRelativeTo(null);
                         dispose();
-
                     }else
                         throw new myPasswordException();
 
-                    } catch (NullPointerException ex){
-                        JOptionPane.showMessageDialog(null, "<html><p> Введите логин </p>", "Ошибка", JOptionPane.WARNING_MESSAGE );
-                    } catch (myLogException meEx) {
-                        JOptionPane.showMessageDialog(null,meEx.getMessage());
-                    } catch (myPasswordException meEx) {
-                        JOptionPane.showMessageDialog(null,meEx.getMessage());
-                    }
+                } catch (NullPointerException ex){
+                    JOptionPane.showMessageDialog(null, "<html><p> Введите логин </p>", "Ошибка", JOptionPane.WARNING_MESSAGE );
+                } catch (myLogException meEx) {
+                    JOptionPane.showMessageDialog(null,meEx.getMessage());
+                } catch (myPasswordException meEx) {
+                    JOptionPane.showMessageDialog(null,meEx.getMessage());
                 }
-
-                if (e.getSource()== button_cancel){
-                    dispose();
-                }
+            }
+            if (e.getSource()== button_cancel){
+                dispose();
+            }
         }
     }
-
     private String[][] OpenLogPasswFile(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("C:\\Универ\\ООП\\Лабы\\Лабы 2-10\\users\\UserLogPassw.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Александр\\Desktop\\RaceRecords\\users\\UserLogPassw.txt"));
 
             String string;
             String [][] str1 = new String [100][2];
@@ -184,5 +159,3 @@ public class InputRegistration extends JFrame {
         }
     }
 }
-
- */
