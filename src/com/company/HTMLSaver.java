@@ -21,6 +21,7 @@ public class HTMLSaver {
             printWriter = new PrintWriter(new FileWriter(fileName));
         } catch (IOException e){
             e.printStackTrace();
+            Main.log.error("Ошибка сохранения файла");
             return;
         }
 
@@ -39,6 +40,7 @@ public class HTMLSaver {
         }
         printWriter.println("</TABLE>");
         printWriter.close();
+        Main.log.info("Файл сохранен в HTML");
 
     }
 }

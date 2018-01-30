@@ -34,11 +34,13 @@ public class TxtHandler {
         // Ошибка чтения файла
         catch(IOException e) {
             e.printStackTrace();
+            Main.log.error("Ошибка открытия файла");
         }
 
         // Создаём новую таблицу с данными из файла
         tableModel = new XmlTableModel(tableData, tableModel.getHeaders(), tableModel.getXmlParams());
         table.setModel(tableModel);
+        Main.log.info("Файл открыт");
         return tableModel;
     }
 
@@ -69,12 +71,12 @@ public class TxtHandler {
 
             }
             writer.close();
+            Main.log.info("Файл сохранен в TXT");
         }
         // Ошибка записи в файл
         catch(IOException e) {
             e.printStackTrace();
+            Main.log.error("Ошибка сохранения файла");
         }
-
-
     }
 }

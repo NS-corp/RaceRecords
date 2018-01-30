@@ -96,6 +96,7 @@ public class Registration extends JFrame {
                     if(!passw) throw new myPasswordException();
 
                     if(all){
+                        Main.log.info("Введенные данные верны");
                         //Запись в файл и запускаем другое окно
                         MyForm myForm = new MyForm();
                         myForm.setVisible(true);
@@ -119,7 +120,7 @@ public class Registration extends JFrame {
     }
     private String[][] OpenLogPasswFile(){
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\Александр\\Desktop\\RaceRecords\\users\\UserLogPassw.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader("users\\UserLogPassw.txt"));
 
             String string;
             String [][] str1 = new String [100][2];
@@ -148,7 +149,9 @@ public class Registration extends JFrame {
 
     private class myLogException extends Exception{
         public myLogException(){
+
             super("Неправильный логин!");
+            Main.log.error("Введен неправильный логин");
         }
     }
 
@@ -156,6 +159,7 @@ public class Registration extends JFrame {
         public myPasswordException(){
             super("Неправильный пароль!");
             passwField.setText("");
+            Main.log.error("Введен неправильный пароль");
         }
     }
 }
