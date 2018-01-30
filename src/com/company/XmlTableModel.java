@@ -3,7 +3,7 @@ package com.company;
 import javax.swing.table.DefaultTableModel;
 import java.util.Vector;
 
-public class XmlTableModel extends DefaultTableModel {
+public class XmlTableModel extends TableModel {
     private XmlParams xmlParams;
 
     /**
