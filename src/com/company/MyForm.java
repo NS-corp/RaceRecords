@@ -199,6 +199,13 @@ public class MyForm extends JFrame {
         currentModel = raceTableModel;
     }
 
+    public static String checkType(String fileName, String fileType){
+        if(!fileName.endsWith(fileType)){
+            fileName += fileType;
+        }
+        return fileName;
+    }
+
     private void openFileTXT(){
         FileDialog openDialog = new FileDialog(this, "Открыть файл", FileDialog.LOAD);
         String fileName = getFileDialogResult(openDialog, TxtHandler.TEXT_FILE_TYPE);
@@ -218,7 +225,7 @@ public class MyForm extends JFrame {
         //Определяем имя начального каталога или файла
         String fileNameSave = MyForm.getFileDialogResult(savXML, XmlHandler.XML_FILE_TYPE);
 
-        XmlHandler.saveXmlFile(fileNameSave, currentModel);
+        XmlHandler.saveXmlFile(currentModel, fileNameSave);
     }
 
     private void openFileXML(){
@@ -252,9 +259,23 @@ public class MyForm extends JFrame {
         FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
         saveDialog.setVisible(true);
 
-        String filename = saveDialog.getDirectory();
-        if(filename == null)
+        String fileName;
+        if(saveDialog.getDirectory() == null || saveDialog.getFile() == null)
             return;
+
+        fileName = saveDialog.getDirectory() + saveDialog.getFile().replace(".", "");
+
+        Thread pdfThread = new Thread(() -> PdfSaver.savePdfFile(currentModel, fileName));
+        pdfThread.setName("PDF Thread");
+        pdfThread.start();
+
+        Thread xmlThread = new Thread(() -> XmlHandler.saveXmlFile(currentModel, fileName));
+        xmlThread.setName("XML Thread");
+        xmlThread.start();
+
+        Thread htmlThread = new Thread(() -> HTMLSaver.saveHtmlFile(currentModel, fileName));
+        htmlThread.setName("HTML Thread");
+        htmlThread.start();
 
     }
 
