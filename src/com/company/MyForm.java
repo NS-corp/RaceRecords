@@ -21,6 +21,7 @@ public class MyForm extends JFrame {
     private final String saveFileIconPath = resourcesPath + "\\sav.png";
     private final String addIconPath = resourcesPath + "\\pl.png";
     private final String deleteIconPath = resourcesPath + "\\del.png";
+    private final String saveFilePDFIconPath = resourcesPath + "\\36.png";
 
     // Racers model
     private final Object[] racersTableHeaders = new Object[]{"Гонщик", "Команда", "Количество очков"};
@@ -53,6 +54,8 @@ public class MyForm extends JFrame {
     JButton buttonSave, buttonOpen, buttonAdd, buttonDelete;
     JMenuItem racersItem, routeItem, raceItem, exitItem;
 
+    JButton buttonSavePDF;
+
     JTable table;
 
     iHandler ihandler = new iHandler();
@@ -82,11 +85,15 @@ public class MyForm extends JFrame {
         buttonAdd = new JButton(new ImageIcon(addIconPath));
         buttonDelete = new JButton(new ImageIcon(deleteIconPath));
 
+        buttonSavePDF = new JButton(new ImageIcon(saveFilePDFIconPath));
+
         // Создание подсказок для кнопок:
         buttonOpen.setToolTipText("Открыть список");
         buttonSave.setToolTipText("Сохранить список");
         buttonAdd.setToolTipText("Добавить изменения");
         buttonDelete.setToolTipText("Удалить строку");
+
+        buttonSavePDF.setToolTipText("Сохранить в PDF");
 
         // Установка размеров для кнопок панели инструментов:
         buttonOpen.setPreferredSize(new Dimension(40, 30));
@@ -94,12 +101,14 @@ public class MyForm extends JFrame {
         buttonAdd.setPreferredSize(new Dimension(40, 30));
         buttonDelete.setPreferredSize(new Dimension(40, 30));
 
+        buttonSavePDF.setPreferredSize(new Dimension(40, 30));
+
         // Добавление кнопок на панель инструментов.
         toolBar.add(buttonOpen);
         toolBar.add(buttonSave);
         toolBar.add(buttonAdd);
         toolBar.add(buttonDelete);
-
+        toolBar.add(buttonSavePDF);
 
         // Создание полоски меню
         menuBar = new JMenuBar();
@@ -121,7 +130,7 @@ public class MyForm extends JFrame {
         raceItem.addActionListener(ihandler);
         buttonOpen.addActionListener(ihandler);
         buttonSave.addActionListener(ihandler);
-
+        buttonSavePDF.addActionListener(ihandler);
     }
 
     private JMenu getFileMenu() {
@@ -267,6 +276,17 @@ public class MyForm extends JFrame {
 
     }
 
+    private void saveFilePDF(){
+        FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
+        String fileName = getFileDialogResult(saveDialog);
+
+        // Если ничего не было выбрано
+        if(fileName == null || fileName.equals(""))
+            return;
+
+        PdfSaver.savePdfFile();
+    }
+
     private String getFileDialogResult(FileDialog dialog){
         dialog.setFile("*.txt");
         dialog.setVisible(true);
@@ -304,6 +324,9 @@ public class MyForm extends JFrame {
             }
             if(e.getSource() == raceItem){
                 createRaceTable();
+            }
+            if(e.getSource() == buttonSavePDF){
+                saveFilePDF();
             }
         }
     }
