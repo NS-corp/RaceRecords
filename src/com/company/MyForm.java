@@ -12,9 +12,6 @@ import java.util.regex.Pattern;
 
 public class MyForm extends JFrame {
 
-    private static final String COLUMN_SEPARATOR = " | ";
-    private static final Pattern separatorPattern = Pattern.compile(" \\| ");
-
     // Адреса путей к файлам
     public static final String resourcesPath = "resources";
     private final String openFileIconPath = resourcesPath + "\\op.png";
@@ -55,7 +52,7 @@ public class MyForm extends JFrame {
     JButton buttonSave, buttonOpen, buttonAdd, buttonDelete;
     JMenuItem racersItem, routeItem, raceItem, exitItem;
 
-    JButton buttonSavePDF, buttonSaveHtml;
+    JButton buttonSavePDF, buttonSaveHtml, buttonSaveAll;
 
     JTable table;
 
@@ -87,6 +84,7 @@ public class MyForm extends JFrame {
         buttonDelete = new JButton(new ImageIcon(deleteIconPath));
         buttonSaveHtml = new JButton(new ImageIcon(saveFileHtmlIconPath));
         buttonSavePDF = new JButton(new ImageIcon(saveFilePDFIconPath));
+        buttonSaveAll = new JButton(new ImageIcon());
 
         // Создание подсказок для кнопок:
         buttonOpen.setToolTipText("Открыть список");
@@ -95,6 +93,7 @@ public class MyForm extends JFrame {
         buttonDelete.setToolTipText("Удалить строку");
         buttonSaveHtml.setToolTipText("Сохранить в html");
         buttonSavePDF.setToolTipText("Сохранить в PDF");
+        buttonSaveAll.setToolTipText("Сохранить во всех форматах");
 
         // Установка размеров для кнопок панели инструментов:
         buttonOpen.setPreferredSize(new Dimension(40, 30));
@@ -103,6 +102,7 @@ public class MyForm extends JFrame {
         buttonDelete.setPreferredSize(new Dimension(40, 30));
         buttonSaveHtml.setPreferredSize(new Dimension(40, 30));
         buttonSavePDF.setPreferredSize(new Dimension(40, 30));
+        buttonSaveAll.setPreferredSize(new Dimension(40, 30));
 
         // Добавление кнопок на панель инструментов.
         toolBar.add(buttonOpen);
@@ -111,6 +111,7 @@ public class MyForm extends JFrame {
         toolBar.add(buttonDelete);
         toolBar.add(buttonSaveHtml);
         toolBar.add(buttonSavePDF);
+        toolBar.add(buttonSaveAll);
 
         // Создание полоски меню
         menuBar = new JMenuBar();
@@ -133,6 +134,7 @@ public class MyForm extends JFrame {
         buttonSave.addActionListener(ihandler);
         buttonSaveHtml.addActionListener(ihandler);
         buttonSavePDF.addActionListener(ihandler);
+        buttonSaveAll.addActionListener(ihandler);
     }
 
     private JMenu getFileMenu() {
@@ -163,7 +165,8 @@ public class MyForm extends JFrame {
             if(currentModel == null){
                 return;
             }
-            XmlHandler.openXmlFile(this, "Открыть XML файл", currentModel);
+
+            openFileXML();
         });
 
         JMenuItem saveXmlItem = new JMenuItem("Сохранить в XML файл");
@@ -171,7 +174,8 @@ public class MyForm extends JFrame {
             if(currentModel == null){
                 return;
             }
-            XmlHandler.saveXmlFile(this, "Сохранить в XML файл", currentModel);
+
+            saveFileXML();
         });
         // Добавление элементов в меню.
         xmlMenu.add(openXmlItem);
@@ -195,85 +199,38 @@ public class MyForm extends JFrame {
         currentModel = raceTableModel;
     }
 
-    private void openFile(){
+    private void openFileTXT(){
         FileDialog openDialog = new FileDialog(this, "Открыть файл", FileDialog.LOAD);
-        String fileName = getFileDialogResult(openDialog, "*.txt");
+        String fileName = getFileDialogResult(openDialog, TxtHandler.TEXT_FILE_TYPE);
 
-        // Если ничего не было выбрано
-        if(fileName == null || fileName.equals(""))
-            return;
-
-        // Считываем файл
-        Vector<Vector<String>> tableData = new Vector<>(); // Данные для таблицы
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            // Считываем строки из файла пока не дойдем до конца
-            String line = reader.readLine();
-            while (line != null){
-                // Вырезаем все разделители и отделяем каждый столбец
-                String[] columns = separatorPattern.split(line);
-                tableData.add(new Vector<>(Arrays.asList(columns)));
-                line = reader.readLine();
-            }
-        }
-        // Ошибка чтения файла
-        catch(IOException e) {
-            e.printStackTrace();
-        }
-
-        // Создаём новую таблицу с данными из файла
-        currentModel = new XmlTableModel(tableData, currentModel.getHeaders(), currentModel.getXmlParams());
-        table.setModel(currentModel);
+        currentModel = TxtHandler.openFileTXT(table, currentModel, fileName);
     }
 
-    private void saveFile(){
+    private void saveFileTXT(){
         FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
-        String fileName = getFileDialogResult(saveDialog, "*.txt");
+        String fileName = getFileDialogResult(saveDialog, TxtHandler.TEXT_FILE_TYPE);
 
-        // Если ничего не было выбрано
-        if(fileName == null || fileName.equals(""))
-            return;
+        TxtHandler.saveFileTXT(currentModel, fileName);
+    }
 
-        try {
-            BufferedWriter writer = new BufferedWriter (new FileWriter(fileName));
-            for (int rowInd = 0; rowInd < currentModel.getRowCount();) {
-                StringBuilder line = new StringBuilder();
-                boolean isRowEmpty = true;
-                for (int columnInd = 0; columnInd < currentModel.getColumnCount(); columnInd++)  // Для всех столбцов
-                {
-                    String value = (String) currentModel.getValueAt(rowInd, columnInd);
-                    if(value == null || value.equals("")){
-                        value = "";
-                    } else {
-                        isRowEmpty = false;
-                    }
-                    // Записать значение из ячейки в линию
-                    line.append(value
-                            // Добавить разделитель, если это не последний столбец
-                            + (columnInd < currentModel.getColumnCount() - 1 ? COLUMN_SEPARATOR : ""));
-                }
+    private void saveFileXML(){
+        FileDialog savXML = new FileDialog(this, "Сохранить в XML файл", FileDialog.SAVE);
+        //Определяем имя начального каталога или файла
+        String fileNameSave = MyForm.getFileDialogResult(savXML, XmlHandler.XML_FILE_TYPE);
 
-                if(isRowEmpty){
-                    currentModel.removeRow(rowInd);
-                } else {
-                    writer.write(line.toString() + "\r\n");
-                    rowInd++;
-                }
+        XmlHandler.saveXmlFile(fileNameSave, currentModel);
+    }
 
-            }
-            writer.close();
-        }
-        // Ошибка записи в файл
-        catch(IOException e) {
-            e.printStackTrace();
-        }
-
-
+    private void openFileXML(){
+        FileDialog openXML = new FileDialog(this, "Открыть XML файл", FileDialog.LOAD);
+        //Определение имени каталога или файла
+        String fileNameOpen = MyForm.getFileDialogResult(openXML, XmlHandler.XML_FILE_TYPE);
+        XmlHandler.openXmlFile(fileNameOpen, currentModel);
     }
 
     private void saveFilePDF(){
         FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
-        String fileName = getFileDialogResult(saveDialog, "*.pdf");
+        String fileName = getFileDialogResult(saveDialog, PdfSaver.PDF_FILE_TYPE);
 
         // Если ничего не было выбрано
         if(fileName == null || fileName.equals(""))
@@ -282,13 +239,23 @@ public class MyForm extends JFrame {
         PdfSaver.savePdfFile(currentModel, fileName);
     }
 
-    private void SaveFileHtml() {
+    private void saveFileHtml() {
         FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
-        String fileName = getFileDialogResult(saveDialog, "*.html");
+        String fileName = getFileDialogResult(saveDialog, HTMLSaver.HTML_FILE_TYPE);
         // Если ничего не было выбрано
         if(fileName == null || fileName.equals(""))
             return;
         HTMLSaver.saveHtmlFile(currentModel, fileName);
+    }
+
+    private void saveFileAll(){
+        FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
+        saveDialog.setVisible(true);
+
+        String filename = saveDialog.getDirectory();
+        if(filename == null)
+            return;
+
     }
 
     public static String getFileDialogResult(FileDialog dialog, String fileType){
@@ -305,10 +272,11 @@ public class MyForm extends JFrame {
     public class iHandler implements ActionListener {
         public void actionPerformed (ActionEvent e) {
             if(e.getSource() == buttonOpen && currentModel != null){
-                openFile();
+
+                openFileTXT();
             }
             if(e.getSource() == buttonSave && currentModel != null){
-                saveFile();
+                saveFileTXT();
             }
             if (e.getSource() == buttonAdd) {
                 currentModel.addRow(new Object[] {null, null, null});
@@ -333,7 +301,10 @@ public class MyForm extends JFrame {
                 saveFilePDF();
             }
             if (e.getSource() == buttonSaveHtml){
-                SaveFileHtml();
+                saveFileHtml();
+            }
+            if(e.getSource() == buttonSaveAll){
+                saveFileAll();
             }
         }
     }

@@ -7,7 +7,11 @@ import java.util.Vector;
 
 public class HTMLSaver {
 
+    public static final String HTML_FILE_TYPE = "*.html";
+
     public static void saveHtmlFile(TableModel tableModel, String fileName){
+
+
 
         PrintWriter printWriter;
         try {

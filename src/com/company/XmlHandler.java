@@ -25,11 +25,10 @@ import org.xml.sax.SAXException;
 
 public class XmlHandler {
 
-    public static boolean saveXmlFile(JFrame frame, String dialogName, XmlTableModel xmlTableModel){
-        FileDialog savXML = new FileDialog(frame, dialogName, FileDialog.SAVE);
+    public static final String XML_FILE_TYPE = "*.xml";
 
-        //Определяем имя начального каталога или файла
-        String fileNameSave = MyForm.getFileDialogResult(savXML, "*.xml");
+    public static boolean saveXmlFile(String fileNameSave, XmlTableModel xmlTableModel){
+
         if (fileNameSave == null)
             return false;
 
@@ -82,11 +81,7 @@ public class XmlHandler {
 
     }
 
-    public static XmlTableModel openXmlFile(JFrame frame, String dialogName, XmlTableModel tableModel){
-        FileDialog openXML = new FileDialog(frame, dialogName, FileDialog.LOAD);
-
-        //Определение имени каталога или файла
-        String fileNameOpen = MyForm.getFileDialogResult(openXML, "*.xml");
+    public static XmlTableModel openXmlFile(String fileNameOpen, XmlTableModel tableModel){
         if (fileNameOpen == null)
             return null;
 
