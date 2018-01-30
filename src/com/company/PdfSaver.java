@@ -15,9 +15,24 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class PdfSaver {
+    public static final String PDF_FILE_TYPE = ".pdf";
     final static String FONT_PATH = MyForm.resourcesPath + "\\Шрифты\\arial.ttf";
+
     public static void savePdfFile(TableModel tableModel, String filePath){
+        if(filePath == null || filePath.equals(""))
+            return;
+
+        filePath = MyForm.checkType(filePath, PDF_FILE_TYPE);
+
         Document document = new Document(PageSize.A4, 50, 50 ,50 ,50);
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (DocumentException e){
+            e.printStackTrace();
+        }
 
         PdfPTable pdfTable = new PdfPTable(tableModel.getColumnCount());
 
