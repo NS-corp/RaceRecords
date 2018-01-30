@@ -20,6 +20,7 @@ public class MyForm extends JFrame {
     private final String deleteIconPath = resourcesPath + "\\del.png";
     private final String saveFilePDFIconPath = resourcesPath + "\\36.png";
     private final String saveFileHtmlIconPath = resourcesPath + "\\html.png";
+    private final String saveFileAllIconPath = resourcesPath + "\\47.png";
 
     // Racers model
     private final Object[] racersTableHeaders = new Object[]{"Гонщик", "Команда", "Количество очков"};
@@ -84,7 +85,7 @@ public class MyForm extends JFrame {
         buttonDelete = new JButton(new ImageIcon(deleteIconPath));
         buttonSaveHtml = new JButton(new ImageIcon(saveFileHtmlIconPath));
         buttonSavePDF = new JButton(new ImageIcon(saveFilePDFIconPath));
-        buttonSaveAll = new JButton(new ImageIcon());
+        buttonSaveAll = new JButton(new ImageIcon(saveFileAllIconPath));
 
         // Создание подсказок для кнопок:
         buttonOpen.setToolTipText("Открыть список");
@@ -166,6 +167,7 @@ public class MyForm extends JFrame {
                 return;
             }
 
+            cleanUpTable();
             openFileXML();
         });
 
@@ -175,6 +177,7 @@ public class MyForm extends JFrame {
                 return;
             }
 
+            cleanUpTable();
             saveFileXML();
         });
         // Добавление элементов в меню.
@@ -197,6 +200,27 @@ public class MyForm extends JFrame {
     private void createRaceTable () {
         table.setModel(raceTableModel);
         currentModel = raceTableModel;
+    }
+
+    private void cleanUpTable() {
+        for (int rowInd = 0; rowInd < currentModel.getRowCount();) {
+            boolean isRowEmpty = true;
+            for (int columnInd = 0; columnInd < currentModel.getColumnCount(); columnInd++)  // Для всех столбцов
+            {
+                String value = (String) currentModel.getValueAt(rowInd, columnInd);
+                if (value == null || value.equals("")) {
+                    currentModel.setValueAt("", rowInd, columnInd);
+                } else {
+                    isRowEmpty = false;
+                }
+            }
+
+            if (isRowEmpty) {
+                currentModel.removeRow(rowInd);
+            } else {
+                rowInd++;
+            }
+        }
     }
 
     public static String checkType(String fileName, String fileType){
@@ -297,6 +321,7 @@ public class MyForm extends JFrame {
                 openFileTXT();
             }
             if(e.getSource() == buttonSave && currentModel != null){
+                cleanUpTable();
                 saveFileTXT();
             }
             if (e.getSource() == buttonAdd) {
@@ -319,12 +344,15 @@ public class MyForm extends JFrame {
                 createRaceTable();
             }
             if(e.getSource() == buttonSavePDF){
+                cleanUpTable();
                 saveFilePDF();
             }
             if (e.getSource() == buttonSaveHtml){
+                cleanUpTable();
                 saveFileHtml();
             }
             if(e.getSource() == buttonSaveAll){
+                cleanUpTable();
                 saveFileAll();
             }
         }
