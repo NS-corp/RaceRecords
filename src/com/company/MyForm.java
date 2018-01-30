@@ -15,8 +15,8 @@ public class MyForm extends JFrame {
     private static final String COLUMN_SEPARATOR = " | ";
     private static final Pattern separatorPattern = Pattern.compile(" \\| ");
 
-    private static final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
-    //private final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
+    // Адреса путей к файлам
+    public static final String resourcesPath = "resources";
     private final String openFileIconPath = resourcesPath + "\\op.png";
     private final String saveFileIconPath = resourcesPath + "\\sav.png";
     private final String addIconPath = resourcesPath + "\\pl.png";
@@ -219,15 +219,8 @@ public class MyForm extends JFrame {
             e.printStackTrace();
         }
 
-        // Берём заголовки из предыдущей таблицы
-        Vector<String> headers = new Vector<>();
-        for(int i = 0; i < table.getColumnCount(); i++){
-            headers.add(table.getColumnName(i));
-            System.out.println(headers.get(i));
-        }
-
         // Создаём новую таблицу с данными из файла
-        currentModel = new XmlTableModel(tableData, headers, currentModel.getXmlParams());
+        currentModel = new XmlTableModel(tableData, currentModel.getHeaders(), currentModel.getXmlParams());
         table.setModel(currentModel);
     }
 
@@ -284,7 +277,7 @@ public class MyForm extends JFrame {
         if(fileName == null || fileName.equals(""))
             return;
 
-        PdfSaver.savePdfFile();
+        PdfSaver.savePdfFile(currentModel, fileName);
     }
 
     private String getFileDialogResult(FileDialog dialog){
