@@ -11,7 +11,7 @@ public class TxtHandler {
     public static final String COLUMN_SEPARATOR = " | ";
     public static final Pattern separatorPattern = Pattern.compile(" \\| ");
 
-    public static final String TEXT_FILE_TYPE = "*.txt";
+    public static final String TEXT_FILE_TYPE = ".txt";
 
     public static XmlTableModel openFileTXT(JTable table, XmlTableModel tableModel, String fileName){
         // Если ничего не было выбрано
@@ -43,10 +43,11 @@ public class TxtHandler {
     }
 
     public static void saveFileTXT(XmlTableModel tableModel, String fileName){
-
         // Если ничего не было выбрано
         if(fileName == null || fileName.equals(""))
             return;
+
+        fileName = MyForm.checkType(fileName, TEXT_FILE_TYPE);
 
         try {
             BufferedWriter writer = new BufferedWriter (new FileWriter(fileName));

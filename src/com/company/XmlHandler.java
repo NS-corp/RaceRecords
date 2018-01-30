@@ -25,12 +25,13 @@ import org.xml.sax.SAXException;
 
 public class XmlHandler {
 
-    public static final String XML_FILE_TYPE = "*.xml";
+    public static final String XML_FILE_TYPE = ".xml";
 
-    public static boolean saveXmlFile(String fileNameSave, XmlTableModel xmlTableModel){
-
+    public static boolean saveXmlFile(XmlTableModel xmlTableModel, String fileNameSave){
         if (fileNameSave == null)
             return false;
+
+        fileNameSave = MyForm.checkType(fileNameSave, XML_FILE_TYPE);
 
         Document doc;
         try {

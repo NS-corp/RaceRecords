@@ -7,11 +7,14 @@ import java.util.Vector;
 
 public class HTMLSaver {
 
-    public static final String HTML_FILE_TYPE = "*.html";
+    public static final String HTML_FILE_TYPE = ".html";
 
     public static void saveHtmlFile(TableModel tableModel, String fileName){
+        // Если ничего не было выбрано
+        if(fileName == null || fileName.equals(""))
+            return;
 
-
+        fileName = MyForm.checkType(fileName, HTML_FILE_TYPE);
 
         PrintWriter printWriter;
         try {
