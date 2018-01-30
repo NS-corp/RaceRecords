@@ -64,17 +64,21 @@ public class XmlHandler {
             trans.setOutputProperty(OutputKeys.METHOD, "xml");
             trans.setOutputProperty(OutputKeys.INDENT, "yes");
             trans.transform(new DOMSource(doc), new StreamResult(new FileOutputStream(fileNameSave)));
+            Main.log.info("Файл сохранен в XML");
         } // Ошибка создания XML преобразователя
         catch (TransformerConfigurationException e){
             e.printStackTrace();
+            Main.log.error("Ошибка сохранения файла");
             return false;
         } //Ошибка работы XML преобразователя
         catch (TransformerException e){
             e.printStackTrace();
+            Main.log.error("Ошибка сохранения файла");
             return false;
         } //Ошибка ввода-вывода
         catch (IOException e){
             e.printStackTrace();
+            Main.log.error("Ошибка открытия файла");
             return false;
         }
 
@@ -111,15 +115,19 @@ public class XmlHandler {
                 // Добавляем строку в таблицу
                 tableModel.addRow(rowData);
             }
+            Main.log.info("Файл открыт");
             //Ошибка при чтении файла
         } catch (SAXException e) {
             e.printStackTrace();
+            Main.log.error("Ошибка открытия файла");
             return null;
             //Ошибка ввода-вывода
         } catch (Exception e){
             e.printStackTrace();
+            Main.log.error("Ошибка открытия файла");
             return null;
         }
+
 
         return tableModel;
     }

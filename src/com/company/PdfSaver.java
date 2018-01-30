@@ -30,8 +30,10 @@ public class PdfSaver {
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
         } catch (FileNotFoundException e){
             e.printStackTrace();
+            Main.log.error("Ошибка открытия файла");
         } catch (DocumentException e){
             e.printStackTrace();
+            Main.log.error("Ошибка сохранения файла");
         }
 
         PdfPTable pdfTable = new PdfPTable(tableModel.getColumnCount());
@@ -41,8 +43,10 @@ public class PdfSaver {
             bfComic = BaseFont.createFont(FONT_PATH, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         } catch (DocumentException el){
             el.printStackTrace();
+            Main.log.error("Ошибка сохранения файла");
         } catch (IOException el){
             el.printStackTrace();
+            Main.log.error("Ошибка открытия файла");
         }
 
         Font font1 = new Font(bfComic, 12);
@@ -62,8 +66,10 @@ public class PdfSaver {
 
         try {
             document.add(pdfTable);
+            Main.log.info("Файл сохранен в PDF");
         } catch (DocumentException e){
             e.printStackTrace();
+            Main.log.error("Ошибка сохранения файла");
         }
 
         document.close();

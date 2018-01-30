@@ -190,16 +190,19 @@ public class MyForm extends JFrame {
     private void createRacersTable () {
         table.setModel(racersTableModel);
         currentModel = racersTableModel;
+        Main.log.info("Запущена таблица гонщиков");
     }
 
     private void createRouteTable () {
         table.setModel(routeTableModel);
         currentModel = routeTableModel;
+        Main.log.info("Запущена таблица трасс");
     }
 
     private void createRaceTable () {
         table.setModel(raceTableModel);
         currentModel = raceTableModel;
+        Main.log.info("Запущена таблица гонок");
     }
 
     private void cleanUpTable() {
@@ -333,6 +336,7 @@ public class MyForm extends JFrame {
             }
             if (e.getSource() == exitItem) {
                 dispose();
+                Main.log.info("Конец работы");
             }
             if (e.getSource() == racersItem) {
                 createRacersTable();
