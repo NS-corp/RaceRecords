@@ -22,6 +22,7 @@ public class MyForm extends JFrame {
     private final String addIconPath = resourcesPath + "\\pl.png";
     private final String deleteIconPath = resourcesPath + "\\del.png";
     private final String saveFilePDFIconPath = resourcesPath + "\\36.png";
+    private final String saveFileHtmlIconPath = resourcesPath + "\\html.png";
 
     // Racers model
     private final Object[] racersTableHeaders = new Object[]{"Гонщик", "Команда", "Количество очков"};
@@ -54,7 +55,7 @@ public class MyForm extends JFrame {
     JButton buttonSave, buttonOpen, buttonAdd, buttonDelete;
     JMenuItem racersItem, routeItem, raceItem, exitItem;
 
-    JButton buttonSavePDF;
+    JButton buttonSavePDF, buttonSaveHtml;
 
     JTable table;
 
@@ -84,7 +85,7 @@ public class MyForm extends JFrame {
         buttonSave = new JButton(new ImageIcon(saveFileIconPath));
         buttonAdd = new JButton(new ImageIcon(addIconPath));
         buttonDelete = new JButton(new ImageIcon(deleteIconPath));
-
+        buttonSaveHtml = new JButton(new ImageIcon(saveFileHtmlIconPath));
         buttonSavePDF = new JButton(new ImageIcon(saveFilePDFIconPath));
 
         // Создание подсказок для кнопок:
@@ -92,7 +93,7 @@ public class MyForm extends JFrame {
         buttonSave.setToolTipText("Сохранить список");
         buttonAdd.setToolTipText("Добавить изменения");
         buttonDelete.setToolTipText("Удалить строку");
-
+        buttonSaveHtml.setToolTipText("Сохранить в html");
         buttonSavePDF.setToolTipText("Сохранить в PDF");
 
         // Установка размеров для кнопок панели инструментов:
@@ -100,7 +101,7 @@ public class MyForm extends JFrame {
         buttonSave.setPreferredSize(new Dimension(45, 30));
         buttonAdd.setPreferredSize(new Dimension(40, 30));
         buttonDelete.setPreferredSize(new Dimension(40, 30));
-
+        buttonSaveHtml.setPreferredSize(new Dimension(40, 30));
         buttonSavePDF.setPreferredSize(new Dimension(40, 30));
 
         // Добавление кнопок на панель инструментов.
@@ -108,6 +109,7 @@ public class MyForm extends JFrame {
         toolBar.add(buttonSave);
         toolBar.add(buttonAdd);
         toolBar.add(buttonDelete);
+        toolBar.add(buttonSaveHtml);
         toolBar.add(buttonSavePDF);
 
         // Создание полоски меню
@@ -120,7 +122,6 @@ public class MyForm extends JFrame {
         menuBar.add(Box.createHorizontalGlue());
         setJMenuBar(menuBar);
 
-
         // Добавление обработчиков на кнопки.
         buttonAdd.addActionListener(ihandler);
         buttonDelete.addActionListener(ihandler);
@@ -130,6 +131,7 @@ public class MyForm extends JFrame {
         raceItem.addActionListener(ihandler);
         buttonOpen.addActionListener(ihandler);
         buttonSave.addActionListener(ihandler);
+        buttonSaveHtml.addActionListener(ihandler);
         buttonSavePDF.addActionListener(ihandler);
     }
 
@@ -280,6 +282,15 @@ public class MyForm extends JFrame {
         PdfSaver.savePdfFile(currentModel, fileName);
     }
 
+    private void SaveFileHtml() {
+        FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
+        String fileName = getFileDialogResult(saveDialog);
+        // Если ничего не было выбрано
+        if(fileName == null || fileName.equals(""))
+            return;
+        HTMLSaver.saveHtmlFile(currentModel, fileName);
+    }
+
     private String getFileDialogResult(FileDialog dialog){
         dialog.setFile("*.txt");
         dialog.setVisible(true);
@@ -320,6 +331,9 @@ public class MyForm extends JFrame {
             }
             if(e.getSource() == buttonSavePDF){
                 saveFilePDF();
+            }
+            if (e.getSource() == buttonSaveHtml){
+                SaveFileHtml();
             }
         }
     }
