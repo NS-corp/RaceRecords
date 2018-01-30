@@ -7,6 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="itext5-itext-pdfa-5.5.12" level="project" />
   </component>
 </module>
-
