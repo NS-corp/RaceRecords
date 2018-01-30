@@ -5,9 +5,16 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.Arrays;
+import java.util.Vector;
+import java.util.regex.Pattern;
 
 public class MyForm extends JFrame {
-    
+
+    private final String COLUMN_SEPARATOR = " | ";
+    private final Pattern separatorPattern = Pattern.compile(" \\| ");
+
     private final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
     //private final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
     private final String openFileIconPath = resourcesPath + "\\op.png";
@@ -32,10 +39,10 @@ public class MyForm extends JFrame {
 
     DefaultTableModel currentModel;
 
-    JButton button_save, button_open, button_add, button_delete;
+    JButton buttonSave, buttonOpen, buttonAdd, buttonDelete;
     JMenuBar menuBar;
-    JMenu filemenu;
-    JMenuItem RacersItem, RouteItem, RaceItem, ExitItem;
+    JMenu fileMenu;
+    JMenuItem racersItem, routeItem, raceItem, exitItem;
 
     JTable table;
 
@@ -60,60 +67,60 @@ public class MyForm extends JFrame {
         add(toolBar, BorderLayout.NORTH); // добавили панель инструментов в главное окно программы.
 
         // Создание кнопок и иконок:
-        button_open = new JButton(new ImageIcon(openFileIconPath));
-        button_save = new JButton(new ImageIcon(saveFileIconPath));
-        button_add = new JButton(new ImageIcon(addIconPath));
-        button_delete = new JButton(new ImageIcon(deleteIconPath));
+        buttonOpen = new JButton(new ImageIcon(openFileIconPath));
+        buttonSave = new JButton(new ImageIcon(saveFileIconPath));
+        buttonAdd = new JButton(new ImageIcon(addIconPath));
+        buttonDelete = new JButton(new ImageIcon(deleteIconPath));
 
         // Создание подсказок для кнопок:
-        button_open.setToolTipText("Открыть список");
-        button_save.setToolTipText("Сохранить список");
-        button_add.setToolTipText("Добавить изменения");
-        button_delete.setToolTipText("Удалить строку");
+        buttonOpen.setToolTipText("Открыть список");
+        buttonSave.setToolTipText("Сохранить список");
+        buttonAdd.setToolTipText("Добавить изменения");
+        buttonDelete.setToolTipText("Удалить строку");
 
         // Установка размеров для кнопок панели инструментов:
-        button_open.setPreferredSize(new Dimension(40, 30));
-        button_save.setPreferredSize(new Dimension(45, 30));
-        button_add.setPreferredSize(new Dimension(40, 30));
-        button_delete.setPreferredSize(new Dimension(40, 30));
+        buttonOpen.setPreferredSize(new Dimension(40, 30));
+        buttonSave.setPreferredSize(new Dimension(45, 30));
+        buttonAdd.setPreferredSize(new Dimension(40, 30));
+        buttonDelete.setPreferredSize(new Dimension(40, 30));
 
         // Добавление кнопок на панель инструментов.
-        toolBar.add(button_open);
-        toolBar.add(button_save);
-        toolBar.add(button_add);
-        toolBar.add(button_delete);
+        toolBar.add(buttonOpen);
+        toolBar.add(buttonSave);
+        toolBar.add(buttonAdd);
+        toolBar.add(buttonDelete);
 
         // Создание меню.
         menuBar = new JMenuBar();
-        filemenu = new JMenu("Меню");
-        RacersItem = new JMenuItem("Открыть список гонщиков");
-        RouteItem = new JMenuItem("Открыть список трасс");
-        RaceItem = new JMenuItem("Открыть список соревнований");
-        ExitItem = new JMenuItem("Выйти");
-        Menu();
+        fileMenu = new JMenu("Меню");
+        racersItem = new JMenuItem("Открыть список гонщиков");
+        routeItem = new JMenuItem("Открыть список трасс");
+        raceItem = new JMenuItem("Открыть список соревнований");
+        exitItem = new JMenuItem("Выйти");
+        setUpMenu();
 
         // Добавление обработчиков на кнопки.
-        button_add.addActionListener(ihandler);
-        button_delete.addActionListener(ihandler);
-        ExitItem.addActionListener(ihandler);
-        RacersItem.addActionListener(ihandler);
-        RouteItem.addActionListener(ihandler);
-        RaceItem.addActionListener(ihandler);
-        //button_open.addActionListener(ihandler);
-        //button_save.addActionListener(ihandler);
+        buttonAdd.addActionListener(ihandler);
+        buttonDelete.addActionListener(ihandler);
+        exitItem.addActionListener(ihandler);
+        racersItem.addActionListener(ihandler);
+        routeItem.addActionListener(ihandler);
+        raceItem.addActionListener(ihandler);
+        buttonOpen.addActionListener(ihandler);
+        buttonSave.addActionListener(ihandler);
 
     }
 
-    private void Menu() {
+    private void setUpMenu() {
         // Добавление элементов в меню.
-        filemenu.add(RacersItem);
-        filemenu.add(RouteItem);
-        filemenu.add(RaceItem);
-        filemenu.addSeparator();
-        filemenu.add(ExitItem);
+        fileMenu.add(racersItem);
+        fileMenu.add(routeItem);
+        fileMenu.add(raceItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitItem);
 
         // Установка меню.
-        menuBar.add(filemenu);
+        menuBar.add(fileMenu);
         menuBar.add(Box.createHorizontalGlue());
         setJMenuBar(menuBar);
     }
@@ -133,27 +140,110 @@ public class MyForm extends JFrame {
         currentModel = raceTableModel;
     }
 
+    private void openFile(){
+        FileDialog openDialog = new FileDialog(this, "Открыть файл", FileDialog.LOAD);
+        String fileName = getFileDialogResult(openDialog);
+
+        // Если ничего не было выбрано
+        if(fileName == null || fileName.equals(""))
+            return;
+
+        // Считываем файл
+        Vector<Vector<String>> tableData = new Vector<>(); // Данные для таблицы
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            // Считываем строки из файла пока не дойдем до конца
+            String line = reader.readLine();
+            while (line != null){
+                // Вырезаем все разделители и отделяем каждый столбец
+                String[] columns = separatorPattern.split(line);
+                tableData.add(new Vector<>(Arrays.asList(columns)));
+                line = reader.readLine();
+            }
+        }
+        // Ошибка чтения файла
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        // Берём заголовки из предыдущей таблицы
+        Vector<String> headers = new Vector<>();
+        for(int i = 0; i < table.getColumnCount(); i++){
+            headers.add(table.getColumnName(i));
+            System.out.println(headers.get(i));
+        }
+
+        // Создаём новую таблицу с данными из файла
+        currentModel = new DefaultTableModel(tableData, headers);
+        table.setModel(currentModel);
+    }
+
+    private void saveFile(){
+        FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
+        String fileName = getFileDialogResult(saveDialog);
+
+        // Если ничего не было выбрано
+        if(fileName == null || fileName.equals(""))
+            return;
+
+        try {
+            BufferedWriter writer = new BufferedWriter (new FileWriter(fileName));
+            for (int i = 0; i < currentModel.getRowCount(); i++) {
+                for (int j = 0; j < currentModel.getColumnCount(); j++)  // Для всех столбцов
+                {
+                    // Записать значение из ячейки
+                    writer.write(currentModel.getValueAt(i, j)
+                            // Добавить разделитель, если это не последний столбец
+                            + (j < currentModel.getColumnCount()- 1 ? COLUMN_SEPARATOR : ""));
+                }
+                writer.write("\r\n");
+            }
+            writer.close();
+        }
+        // Ошибка записи в файл
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private String getFileDialogResult(FileDialog dialog){
+        dialog.setFile("*.txt");
+        dialog.setVisible(true);
+
+        if(dialog.getDirectory() == null || dialog.getFile() == null)
+            return  null;
+        else
+            return dialog.getDirectory() + dialog.getFile();
+    }
+
     // Обработчики событий.
     public class iHandler implements ActionListener {
         public void actionPerformed (ActionEvent e) {
-
-            if (e.getSource() == button_add) {
+            if(e.getSource() == buttonOpen && currentModel != null){
+                openFile();
+            }
+            if(e.getSource() == buttonSave && currentModel != null){
+                saveFile();
+            }
+            if (e.getSource() == buttonAdd) {
                 currentModel.addRow(new Object[] {null, null, null});
             }
-            if (e.getSource() == button_delete) {
+            if (e.getSource() == buttonDelete) {
                 int selectedRow = table.getSelectedRow();
                 currentModel.removeRow(selectedRow);
             }
-            if (e.getSource() == ExitItem) {
+            if (e.getSource() == exitItem) {
                 dispose();
             }
-            if (e.getSource() == RacersItem) {
+            if (e.getSource() == racersItem) {
                 createRacersTable();
             }
-            if(e.getSource() == RouteItem){
+            if(e.getSource() == routeItem){
                 createRouteTable();
             }
-            if(e.getSource() == RaceItem){
+            if(e.getSource() == raceItem){
                 createRaceTable();
             }
         }
