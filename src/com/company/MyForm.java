@@ -15,12 +15,13 @@ public class MyForm extends JFrame {
     private static final String COLUMN_SEPARATOR = " | ";
     private static final Pattern separatorPattern = Pattern.compile(" \\| ");
 
-    private static final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
-    //private final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
+    //private static final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
+    private final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
     private final String openFileIconPath = resourcesPath + "\\op.png";
     private final String saveFileIconPath = resourcesPath + "\\sav.png";
     private final String addIconPath = resourcesPath + "\\pl.png";
     private final String deleteIconPath = resourcesPath + "\\del.png";
+    private final String saveFileHtmlIconPath = resourcesPath + "\\html.png";
 
     // Racers model
     private final Object[] racersTableHeaders = new Object[]{"Гонщик", "Команда", "Количество очков"};
@@ -50,7 +51,7 @@ public class MyForm extends JFrame {
 
     JMenuBar menuBar;
 
-    JButton buttonSave, buttonOpen, buttonAdd, buttonDelete;
+    JButton buttonSave, buttonOpen, buttonAdd, buttonDelete, buttonSaveHtml;
     JMenuItem racersItem, routeItem, raceItem, exitItem;
 
     JTable table;
@@ -81,24 +82,28 @@ public class MyForm extends JFrame {
         buttonSave = new JButton(new ImageIcon(saveFileIconPath));
         buttonAdd = new JButton(new ImageIcon(addIconPath));
         buttonDelete = new JButton(new ImageIcon(deleteIconPath));
+        buttonSaveHtml = new JButton(new ImageIcon(saveFileHtmlIconPath));
 
         // Создание подсказок для кнопок:
         buttonOpen.setToolTipText("Открыть список");
         buttonSave.setToolTipText("Сохранить список");
         buttonAdd.setToolTipText("Добавить изменения");
         buttonDelete.setToolTipText("Удалить строку");
+        buttonSaveHtml.setToolTipText("Сохранить в html");
 
         // Установка размеров для кнопок панели инструментов:
         buttonOpen.setPreferredSize(new Dimension(40, 30));
         buttonSave.setPreferredSize(new Dimension(45, 30));
         buttonAdd.setPreferredSize(new Dimension(40, 30));
         buttonDelete.setPreferredSize(new Dimension(40, 30));
+        buttonSaveHtml.setPreferredSize(new Dimension(40, 30));
 
         // Добавление кнопок на панель инструментов.
         toolBar.add(buttonOpen);
         toolBar.add(buttonSave);
         toolBar.add(buttonAdd);
         toolBar.add(buttonDelete);
+        toolBar.add(buttonSaveHtml);
 
 
         // Создание полоски меню
@@ -111,7 +116,6 @@ public class MyForm extends JFrame {
         menuBar.add(Box.createHorizontalGlue());
         setJMenuBar(menuBar);
 
-
         // Добавление обработчиков на кнопки.
         buttonAdd.addActionListener(ihandler);
         buttonDelete.addActionListener(ihandler);
@@ -121,7 +125,7 @@ public class MyForm extends JFrame {
         raceItem.addActionListener(ihandler);
         buttonOpen.addActionListener(ihandler);
         buttonSave.addActionListener(ihandler);
-
+        buttonSaveHtml.addActionListener(ihandler);
     }
 
     private JMenu getFileMenu() {
@@ -252,6 +256,18 @@ public class MyForm extends JFrame {
 
     }
 
+    /*private void SaveFileHtml() {
+        FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
+        String fileName = getFileDialogResult(saveDialog);
+
+        // Если ничего не было выбрано
+        if(fileName == null || fileName.equals(""))
+            return;
+
+        HtmlSave.saveHtmlFile();
+    }
+    */
+
     private String getFileDialogResult(FileDialog dialog){
         dialog.setFile("*.txt");
         dialog.setVisible(true);
@@ -284,12 +300,15 @@ public class MyForm extends JFrame {
             if (e.getSource() == racersItem) {
                 createRacersTable();
             }
-            if(e.getSource() == routeItem){
+            if(e.getSource() == routeItem) {
                 createRouteTable();
             }
-            if(e.getSource() == raceItem){
+            if(e.getSource() == raceItem) {
                 createRaceTable();
             }
+            /*if (e.getSource() == buttonSaveHtml){
+                SaveFileHtml();
+            }*/
         }
     }
 
