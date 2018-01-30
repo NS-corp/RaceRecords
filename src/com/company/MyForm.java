@@ -232,15 +232,30 @@ public class MyForm extends JFrame {
 
         try {
             BufferedWriter writer = new BufferedWriter (new FileWriter(fileName));
-            for (int i = 0; i < currentModel.getRowCount(); i++) {
-                for (int j = 0; j < currentModel.getColumnCount(); j++)  // Для всех столбцов
+            for (int rowInd = 0; rowInd < currentModel.getRowCount();) {
+                StringBuilder line = new StringBuilder();
+                boolean isRowEmpty = true;
+                for (int columnInd = 0; columnInd < currentModel.getColumnCount(); columnInd++)  // Для всех столбцов
                 {
-                    // Записать значение из ячейки
-                    writer.write(currentModel.getValueAt(i, j)
+                    String value = (String) currentModel.getValueAt(rowInd, columnInd);
+                    if(value == null || value.equals("")){
+                        value = "";
+                    } else {
+                        isRowEmpty = false;
+                    }
+                    // Записать значение из ячейки в линию
+                    line.append(value
                             // Добавить разделитель, если это не последний столбец
-                            + (j < currentModel.getColumnCount()- 1 ? COLUMN_SEPARATOR : ""));
+                            + (columnInd < currentModel.getColumnCount() - 1 ? COLUMN_SEPARATOR : ""));
                 }
-                writer.write("\r\n");
+
+                if(isRowEmpty){
+                    currentModel.removeRow(rowInd);
+                } else {
+                    writer.write(line.toString() + "\r\n");
+                    rowInd++;
+                }
+
             }
             writer.close();
         }
