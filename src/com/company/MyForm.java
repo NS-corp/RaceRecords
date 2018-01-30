@@ -20,6 +20,7 @@ public class MyForm extends JFrame {
     private final String deleteIconPath = resourcesPath + "\\del.png";
     private final String saveFilePDFIconPath = resourcesPath + "\\36.png";
     private final String saveFileHtmlIconPath = resourcesPath + "\\html.png";
+    private final String saveFileAllIconPath = resourcesPath + "\\47.png";
 
     // Racers model
     private final Object[] racersTableHeaders = new Object[]{"Гонщик", "Команда", "Количество очков"};
@@ -84,7 +85,7 @@ public class MyForm extends JFrame {
         buttonDelete = new JButton(new ImageIcon(deleteIconPath));
         buttonSaveHtml = new JButton(new ImageIcon(saveFileHtmlIconPath));
         buttonSavePDF = new JButton(new ImageIcon(saveFilePDFIconPath));
-        buttonSaveAll = new JButton(new ImageIcon());
+        buttonSaveAll = new JButton(new ImageIcon(saveFileAllIconPath));
 
         // Создание подсказок для кнопок:
         buttonOpen.setToolTipText("Открыть список");
