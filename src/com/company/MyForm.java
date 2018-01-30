@@ -12,10 +12,10 @@ import java.util.regex.Pattern;
 
 public class MyForm extends JFrame {
 
-    private final String COLUMN_SEPARATOR = " | ";
-    private final Pattern separatorPattern = Pattern.compile(" \\| ");
+    private static final String COLUMN_SEPARATOR = " | ";
+    private static final Pattern separatorPattern = Pattern.compile(" \\| ");
 
-    private final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
+    private static final String resourcesPath = "C:\\Programming\\MyProjects\\Сашин курсач\\RaceRecords\\resources";
     //private final String resourcesPath = "C:\\Users\\Александр\\Desktop\\RaceRecords\\resources";
     private final String openFileIconPath = resourcesPath + "\\op.png";
     private final String saveFileIconPath = resourcesPath + "\\sav.png";
@@ -25,23 +25,32 @@ public class MyForm extends JFrame {
     // Racers model
     private final Object[] racersTableHeaders = new Object[]{"Гонщик", "Команда", "Количество очков"};
     private final Object[][] racersTableCells = new Object[10][3];
-    DefaultTableModel racersTableModel = new DefaultTableModel(racersTableCells, racersTableHeaders);
+    private final String[] racersXmlAttributes = new String[]{"Name", "Team", "Points"};
+    private final XmlTableModel.XmlParams racersXmlParams = new XmlTableModel.XmlParams("RacerList",
+            "RacerElement", racersXmlAttributes);
+    private XmlTableModel racersTableModel = new XmlTableModel(racersTableCells, racersTableHeaders, racersXmlParams);
 
     // Route model
     private final Object[] routeTableHeaders = new Object[]{"Трассы", "Призёр", "Команда призёра"};
     private final Object[][] routeTableCells = new Object[10][3];
-    DefaultTableModel routeTableModel = new DefaultTableModel(routeTableCells, routeTableHeaders);
+    private final String[] routeXmlAttributes = new String[]{"Route", "Name", "Team"};
+    private final XmlTableModel.XmlParams routeXmlParams = new XmlTableModel.XmlParams("RouteList",
+            "RouteElement", routeXmlAttributes);
+    private XmlTableModel routeTableModel = new XmlTableModel(routeTableCells, routeTableHeaders, routeXmlParams);
 
     // Race model
     private final Object[] raceTableHeaders = new Object[]{"Трассы", "Протяженность трассы", "Дата заезда"};
     private final Object[][] raceTableCells = new Object[10][3];
-    DefaultTableModel raceTableModel = new DefaultTableModel(raceTableCells, raceTableHeaders);
+    private final String[] raceXmlAttributes = new String[]{"Route", "Distance", "Date"};
+    private final XmlTableModel.XmlParams raceXmlParams = new XmlTableModel.XmlParams("RaceList",
+            "RaceElement", raceXmlAttributes);
+    private XmlTableModel raceTableModel = new XmlTableModel(raceTableCells, raceTableHeaders, raceXmlParams);
 
-    DefaultTableModel currentModel;
+    XmlTableModel currentModel;
+
+    JMenuBar menuBar;
 
     JButton buttonSave, buttonOpen, buttonAdd, buttonDelete;
-    JMenuBar menuBar;
-    JMenu fileMenu;
     JMenuItem racersItem, routeItem, raceItem, exitItem;
 
     JTable table;
@@ -54,6 +63,7 @@ public class MyForm extends JFrame {
         setBounds(100, 100, 600, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // Создание таблицы
         table = new JTable();
         table.setAutoCreateRowSorter(true);
 
@@ -90,14 +100,17 @@ public class MyForm extends JFrame {
         toolBar.add(buttonAdd);
         toolBar.add(buttonDelete);
 
-        // Создание меню.
+
+        // Создание полоски меню
         menuBar = new JMenuBar();
-        fileMenu = new JMenu("Меню");
-        racersItem = new JMenuItem("Открыть список гонщиков");
-        routeItem = new JMenuItem("Открыть список трасс");
-        raceItem = new JMenuItem("Открыть список соревнований");
-        exitItem = new JMenuItem("Выйти");
-        setUpMenu();
+
+        // Создание меню
+        menuBar.add(getFileMenu());
+        menuBar.add(getXmlMenu());
+        // Добавление полоски меню в Frame
+        menuBar.add(Box.createHorizontalGlue());
+        setJMenuBar(menuBar);
+
 
         // Добавление обработчиков на кнопки.
         buttonAdd.addActionListener(ihandler);
@@ -111,7 +124,15 @@ public class MyForm extends JFrame {
 
     }
 
-    private void setUpMenu() {
+    private JMenu getFileMenu() {
+        // Создание меню и разделов.
+        JMenu fileMenu;
+        fileMenu = new JMenu("Меню");
+        racersItem = new JMenuItem("Открыть список гонщиков");
+        routeItem = new JMenuItem("Открыть список трасс");
+        raceItem = new JMenuItem("Открыть список соревнований");
+        exitItem = new JMenuItem("Выйти");
+
         // Добавление элементов в меню.
         fileMenu.add(racersItem);
         fileMenu.add(routeItem);
@@ -119,10 +140,33 @@ public class MyForm extends JFrame {
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
 
-        // Установка меню.
-        menuBar.add(fileMenu);
-        menuBar.add(Box.createHorizontalGlue());
-        setJMenuBar(menuBar);
+        return fileMenu;
+    }
+
+    private JMenu getXmlMenu() {
+        // Создание меню и разделов.
+        JMenu xmlMenu;
+        xmlMenu = new JMenu("XML");
+        JMenuItem openXmlItem = new JMenuItem("Открыть XML файл");
+        openXmlItem.addActionListener(l -> {
+            if(currentModel == null){
+                return;
+            }
+            XmlHandler.openXmlFile(this, "Открыть XML файл", currentModel);
+        });
+
+        JMenuItem saveXmlItem = new JMenuItem("Сохранить в XML файл");
+        saveXmlItem.addActionListener(l -> {
+            if(currentModel == null){
+                return;
+            }
+            XmlHandler.saveXmlFile(this, "Сохранить в XML файл", currentModel);
+        });
+        // Добавление элементов в меню.
+        xmlMenu.add(openXmlItem);
+        xmlMenu.add(saveXmlItem);
+
+        return xmlMenu;
     }
 
     private void createRacersTable () {
@@ -174,7 +218,7 @@ public class MyForm extends JFrame {
         }
 
         // Создаём новую таблицу с данными из файла
-        currentModel = new DefaultTableModel(tableData, headers);
+        currentModel = new XmlTableModel(tableData, headers, currentModel.getXmlParams());
         table.setModel(currentModel);
     }
 
