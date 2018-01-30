@@ -51,16 +51,13 @@ public class TxtHandler {
 
         try {
             BufferedWriter writer = new BufferedWriter (new FileWriter(fileName));
-            for (int rowInd = 0; rowInd < tableModel.getRowCount();) {
+            for (int rowInd = 0; rowInd < tableModel.getRowCount(); rowInd++) {
                 StringBuilder line = new StringBuilder();
-                boolean isRowEmpty = true;
                 for (int columnInd = 0; columnInd < tableModel.getColumnCount(); columnInd++)  // Для всех столбцов
                 {
                     String value = (String) tableModel.getValueAt(rowInd, columnInd);
-                    if(value == null || value.equals("")){
+                    if (value == null) {
                         value = "";
-                    } else {
-                        isRowEmpty = false;
                     }
                     // Записать значение из ячейки в линию
                     line.append(value
@@ -68,12 +65,7 @@ public class TxtHandler {
                             + (columnInd < tableModel.getColumnCount() - 1 ? COLUMN_SEPARATOR : ""));
                 }
 
-                if(isRowEmpty){
-                    tableModel.removeRow(rowInd);
-                } else {
-                    writer.write(line.toString() + "\r\n");
-                    rowInd++;
-                }
+                writer.write(line.toString() + "\r\n");
 
             }
             writer.close();
