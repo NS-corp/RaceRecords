@@ -27,12 +27,11 @@ public class XmlHandler {
 
     public static boolean saveXmlFile(JFrame frame, String dialogName, XmlTableModel xmlTableModel){
         FileDialog savXML = new FileDialog(frame, dialogName, FileDialog.SAVE);
-        savXML.setFile("*.xml"); //Установка начального каталога
-        savXML.setVisible(true);
 
         //Определяем имя начального каталога или файла
-        String fileNameSave =  savXML.getDirectory() + savXML.getFile();
-        if (fileNameSave == null) return false;
+        String fileNameSave = MyForm.getFileDialogResult(savXML, "*.xml");
+        if (fileNameSave == null)
+            return false;
 
         Document doc;
         try {
@@ -85,11 +84,9 @@ public class XmlHandler {
 
     public static XmlTableModel openXmlFile(JFrame frame, String dialogName, XmlTableModel tableModel){
         FileDialog openXML = new FileDialog(frame, dialogName, FileDialog.LOAD);
-        openXML.setFile("*.xml");
-        openXML.setVisible(true);
 
         //Определение имени каталога или файла
-        String fileNameOpen = openXML.getDirectory() + openXML.getFile();
+        String fileNameOpen = MyForm.getFileDialogResult(openXML, "*.xml");
         if (fileNameOpen == null)
             return null;
 

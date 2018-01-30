@@ -197,7 +197,7 @@ public class MyForm extends JFrame {
 
     private void openFile(){
         FileDialog openDialog = new FileDialog(this, "Открыть файл", FileDialog.LOAD);
-        String fileName = getFileDialogResult(openDialog);
+        String fileName = getFileDialogResult(openDialog, "*.txt");
 
         // Если ничего не было выбрано
         if(fileName == null || fileName.equals(""))
@@ -228,7 +228,7 @@ public class MyForm extends JFrame {
 
     private void saveFile(){
         FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
-        String fileName = getFileDialogResult(saveDialog);
+        String fileName = getFileDialogResult(saveDialog, "*.txt");
 
         // Если ничего не было выбрано
         if(fileName == null || fileName.equals(""))
@@ -273,7 +273,7 @@ public class MyForm extends JFrame {
 
     private void saveFilePDF(){
         FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
-        String fileName = getFileDialogResult(saveDialog);
+        String fileName = getFileDialogResult(saveDialog, "*.pdf");
 
         // Если ничего не было выбрано
         if(fileName == null || fileName.equals(""))
@@ -284,15 +284,15 @@ public class MyForm extends JFrame {
 
     private void SaveFileHtml() {
         FileDialog saveDialog = new FileDialog(this, "Сохранить файл", FileDialog.SAVE);
-        String fileName = getFileDialogResult(saveDialog);
+        String fileName = getFileDialogResult(saveDialog, "*.html");
         // Если ничего не было выбрано
         if(fileName == null || fileName.equals(""))
             return;
         HTMLSaver.saveHtmlFile(currentModel, fileName);
     }
 
-    private String getFileDialogResult(FileDialog dialog){
-        dialog.setFile("*.txt");
+    public static String getFileDialogResult(FileDialog dialog, String fileType){
+        dialog.setFile(fileType);
         dialog.setVisible(true);
 
         if(dialog.getDirectory() == null || dialog.getFile() == null)
