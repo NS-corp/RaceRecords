@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="itext5-itext-pdfa-5.5.12" level="project" />
+    <orderEntry type="library" name="junit-4.11" level="project" />
   </component>
 </module>
